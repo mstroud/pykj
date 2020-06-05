@@ -1,5 +1,5 @@
 # PyKJ
-Python/Flask Karaoke Jockey player and database browser
+Python/Flask Karaoke Jockey (KJ) HTML5-based CDG+MP3 media player and database browser
 
 CDG+MP3 HTML5 player: https://github.com/RadRootLLC/cdgraphics
 
@@ -33,7 +33,7 @@ class Config(object):
 ### Initialize a SQLite3 development database 
 ```
 $ sqlite3 app/testing.db < schema.sql
-$ python3 init_db.py songs_by_artist.csv
+$ python3 import_db.py songs_by_artist.csv
 ```
 
 ### Run app in development mode
