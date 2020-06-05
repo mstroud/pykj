@@ -17,7 +17,7 @@ $ pip3 install -r requirements.txt
 ```
 
 ### Configure
-Update configuration parameters:
+Update configuration parameters (e.g., KARAOKE_MEDIA_ROOT) for your installation:
 
 #### app/config/\_\_init__.py
 ```
@@ -30,8 +30,15 @@ class Config(object):
     KARAOKE_MEDIA_ROOT = "/path/to/app/static/media"
 ```
 
+#### app/\_\_init__.py
+```
+app = Flask(__name__)
+app.config.from_object(Config)
+```
+
 ### Initialize a SQLite3 development database 
 ```
+$ setenv FLASK_ENV development
 $ sqlite3 app/testing.db < schema.sql
 $ python3 import_db.py songs_by_artist.csv
 ```
