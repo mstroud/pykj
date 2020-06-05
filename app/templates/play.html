@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block js %}
+<script type="text/javascript">
+  window.audioUrl = '/media/{{ id }}.mp3'
+  window.cdgUrl = '/media/{{ id }}.cdg'
+</script>
+<script src="/static/js/app.js"></script>
+{% endblock %}
+
+{% block main %}
+<h4 class="page-header">{{ name }}</h4>
+<div id="app">
+  <canvas id="canvas" width="360px" height="270px"></canvas>
+  <audio id="audio" style="display: block;" controls></audio>  
+</div>
+{% endblock %}

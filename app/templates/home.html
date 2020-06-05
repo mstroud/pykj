@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block js %} 
+        <script src="/static/js/table-sortable.js"></script>
+{% endblock%}
+
+{% block css %} 
+        <link href="/static/css/table-sortable.css" rel="stylesheet">
+{% endblock%}
+
+{% block main %}
+  <h1 class="display-4 align-items-center">Karaoke!</h1>
+  <div class="row mt-5 mb-3 align-items-center">
+      <div class="col-xs-8">
+          <input type="text" class="form-control" placeholder="Search songs..." id="search_input">
+      </div>
+      <div class="col-xs-2">
+          <button class="btn btn-primary btn-sm" id="search_button">Search</button>
+      </div>
+      <br/>
+      <div class="col-xs-8">
+          <input type="text" class="form-control" placeholder="Filter..." id="filter_input">
+      </div>
+  </div>
+  <div id="table-root"></div>
+  <script type="text/javascript">
+    var data = [{ }]    
+    var columns = {'basename_relpath': 'Results'}
+    
+    // Dynamic table instance
+    var table = $('#table-root').tableSortable({
+        data,
+        columns,
+        searchField: '#filter_input',
+        rowsPerPage: 20,
+        pagination: true,
+        tableWillMount: () => {
+            console.log('table will mount')
+        },
+        tableDidMount: () => {
+            console.log('table did mount')
+        },
+        tableWillUpdate: () => console.log('table will update'),
+        tableDidUpdate: () => console.log('table did update'),
+        tableWillUnmount: () => console.log('table will unmount'),
+        tableDidUnmount: () => console.log('table did unmount'),
+        onPaginationChange: function(nextPage, setPage) {
+            setPage(nextPage);
+        }
+    });
+           
+    // AJAX Search handler 
+    function search_handler(event) {
+
+        // retrieve the input element
+        var input = document.getElementById('search_input');
+
+        // abort any pending requests
+        window.shXHR.abort();
+
+        window.shXHR.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // We're expecting a json response so we convert it to an object
+                var response = JSON.parse( this.responseText );
+                // or Set new data on table, columns is optional.
+                table.setData(response.results, response.columns);
+            }
+        };
+
+        window.shXHR.open("GET", "/search?q=" + input.value, true);
+        window.shXHR.send()
+    }
+
+    // Bind event listener hooks
+    window.addEventListener("load", function(){
+        // Add a keyup event listener to our input element
+        var s = document.getElementById('search_button');
+        var i = document.getElementById('search_input');
+        var f = document.getElementById('filter_input');
+        s.addEventListener("click", function(event){f.value = ""; search_handler(event)});
+        i.addEventListener("keyup", function(event){
+            if (event.keyCode === 13) {
+                s.click();
+            }
+        });
+
+        // create one global XHR object
+        // so we can abort old requests when a new one is make
+        window.shXHR = new XMLHttpRequest();
+    });
+  </script>
+{% endblock %}
